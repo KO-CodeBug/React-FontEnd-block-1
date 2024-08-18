@@ -1,35 +1,52 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 
+import {fetchAllUser} from '../services/UserServices'
+
 const TableUsers = (props) => {
+    const [listUser, setListUsers] = useState([]);
+
+    useEffect(()=>{
+        // call API // dry (vô hạn code quá 2 lần code tối ưu)
+        getUser();
+    },[])
+
+    const getUser = async () => {
+        let res = await fetchAllUser();
+        if(res && res.data && res.data.data) {
+            setListUsers(res.data.data)
+        }
+    }
+    console.log(listUser);
+    
+
     return(
         <>
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                    <th>#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Username</th>
+                    <th>ID</th>
+                    <th>email</th>
+                    <th>first_name</th>
+                    <th>last_name</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <td>1</td>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    </tr>
-                    <tr>
-                    <td>2</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    </tr>
-                    <tr>
-                    <td>3</td>
-                    <td colSpan={2}>Larry the Bird</td>
-                    <td>@twitter</td>
-                    </tr>
+                    {listUser && listUser.length > 0 && 
+                        listUser.map((e, index) => {
+                            return(
+                                <tr key={`user${index}`}>
+                                    <td>{e.id}</td>
+                                    <td>{e.email}</td>
+                                    <td>{e.first_name}</td>
+                                    <td>{e.last_name}</td>
+                                </tr>
+                            )
+                            
+                    })}
+                   
+                    
                 </tbody>
             </Table>
         </>
